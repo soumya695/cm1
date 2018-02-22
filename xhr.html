@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <script src="xhr.js"></script>
+        <script>
+            var item = null;
+        </script>
+    </head>
+        <body>
+
+            <script type="text/javascript">
+                var obj={
+                    xhr:new XMLHttpRequest(),
+                    loadDoc:function(){
+                        //len=0;
+                        obj.xhr.onreadystatechange=obj.info;
+                        obj.xhr.open("GET","http://assets.cricketgateway.com/2016/assets/PSL-2017/JSON/fixtures_37.json",true);
+                        obj.xhr.send();
+                    },
+                    info:function(){
+                        arrayA = []; uniqueArrayA = [];
+                        arrayB = []; uniqueArrayB = [];
+                        if(obj.xhr.readyState==4 && obj.xhr.status==200)
+                        {
+                            var fixtures=obj.xhr.responseText;
+                            //var fixtures = res.substring(12,res.length-1);
+                            item = fixtures;
+                            var fixtures = JSON.parse(fixtures);
+                            fixtures = fixtures['Fixtures']
+                            //console.log(fixtures['Fixtures'])
+                            for(var i in fixtures)
+                            {
+                              
+                                //console.log(fixtures[i]["team_a_name"]);
+                                 arrayA.push(fixtures[i]["team_a_name"]);
+                                 arrayB.push(fixtures[i]["team_b_name"]);
+                                 
+                            }
+                            //console.log(array);
+                            uniqueArrayA = arrayA.filter(function(item, pos) {
+                                                   return arrayA.indexOf(item) == pos;
+                                                   })
+
+                            uniqueArrayB = arrayB.filter(function(item, pos) {
+                                                   return arrayB.indexOf(item) == pos;
+                                                   })
+
+                           //console.log(uniqueArray);
+                           var select1 = document.getElementById("selectNumber1");
+                           select1.style.display = "block";
+                           var bb1 = document.getElementById("ch");
+                           bb1.style.display = "block";
+                           for(var i = 0; i < uniqueArrayA.length; i++) {
+                               var opt1 = uniqueArrayA[i];
+                               var el1 = document.createElement("option");
+                               el1.textContent = opt1;
+                               el1.value = opt1;
+                               select1.appendChild(el1);
+                           }
+                          
+                           var select2 = document.getElementById("selectNumber2");
+                           select2.style.display = "block";
+                           var bb2 = document.getElementById("ch");
+                           bb2.style.display = "block";
+                           for(var i = 0; i < uniqueArrayB.length; i++) {
+                               var opt2 = uniqueArrayB[i];
+                               var el2 = document.createElement("option");
+                               el2.textContent = opt2;
+                               el2.value = opt2;
+                               select2.appendChild(el2);
+                           }
+                   
+                        }
+                    }
+                    
+                }
+            </script>
+            
+            <button type="button" onclick="obj.loadDoc()">Request data</button>
+            <select id="selectNumber1" style="display:none">
+                
+            </select>
+            <select id="selectNumber2" style="display:none">
+                
+            </select>
+            <input type="button" onclick="choose()" value="choose" id = "ch" style="display:none">
+           
+            <div id="target"></div>
+            <br>
+            <div id="div1"></div>
+            <br>
+            <div id="div2"></div>
+            </body>
+        
+        
+            <script src="http://underscorejs.org/underscore-min.js"></script>
+            <script  type="text/html" id="list">
+                <table>
+                <thead>
+                <tr>
+                <th>team_a_name</th><th>team_b_name</th><th>match_time</th><th>match_date</th><th>match_no</th>
+                
+
+                <th>GMTTime</th><th>ISTTime</th><th>match_date_time_new</th><th>match_end_date</th><th>scorecardid</th>
+                </tr>
+                </thead>
+                <tbody>
+                
+                
+                <% _.each(items,function(item,i,j)
+                          { %>
+                          <% console.log(item) %>
+                          
+                          <tr onclick="fn()" id=<%= i %>>
+                          <td >
+                          
+                          <%= item.team_a_name %>
+                          
+                          </td>
+                          <td>
+                          <%= item.team_b_name %>
+                          
+                          </td>
+                          <td>
+                          <%= item.match_time %>
+                          
+                          </td>
+                          <td>
+                          <%= item.match_date %>
+                          
+                          </td>
+                          <td>
+                          <%= item.match_no %>
+                          </td>
+                          <td>
+                          <%= item.venue %>
+                          </td>
+                          <td>
+                          <%= item.GMTTime %>
+                          </td>
+                          <td>
+                          <%= item.ISTTime %>
+                          </td>
+                          <td>
+                          <%= item.match_date_time_new %>
+                          </td>
+                          <td>
+                          <%= item.match_end_date %>
+                          </td>
+                          <td>
+                          <%= item.scorecardid %>
+                          </td>
+                          
+                          
+                          
+                          </tr>
+                          <% }); %>
+                          
+                          
+                          </tbody>
+                          
+                          </table>
+                          
+                </script>
+            <script  type="text/javascript">
+                function sett(item)
+                {
+                var target = document.getElementById("target");
+                var list = document.getElementById("list");
+                var allEntries = JSON.parse(item);
+                var listDiv = list.innerHTML;
+                var templateData = _.template(listDiv);
+                console.log(allEntries);
+                target.innerHTML = templateData({ items: allEntries });
+                }
+            
+            function choose()
+            {
+              
+                temp1 = [];
+                 temp2 = [];
+                var v1 = document.getElementById('selectNumber1').value;
+                 var v2 = document.getElementById('selectNumber2').value;
+                
+                var fixtures = JSON.parse(item);
+                fixtures = fixtures['Fixtures']
+                //console.log(fixtures['Fixtures'])
+                
+                for(var i in fixtures)
+                {
+                    
+                    if(fixtures[i]["team_a_name"]==v1 && fixtures[i]["team_b_name"]==v2)//|| fixtures[i]["team_a_name"]== v2 && fixtures[i]["team_b_name"]==v1 || fixtures[i]["team_b_name"]==v2)
+                    {
+                        temp1.push(fixtures[i]);
+                        temp2.push(fixtures[i]);
+                    }
+                   
+                }
+                 sett(JSON.stringify(temp1));
+                sett(JSON.stringify(temp2));
+            }
+            </script>
+           
+            
+            
+            
+           
+            
+</html>
